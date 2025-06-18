@@ -24,3 +24,19 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.preview-container {
+  background-color: #fff;
+   
+}
+
+.activeColor{
+  background-color: #004b26;
+  color: #fff;
+}
+.activeImg{
+  filter: brightness(0) invert(1);
+}
+.defaultColor {
+  background-color: #fff;
+}
