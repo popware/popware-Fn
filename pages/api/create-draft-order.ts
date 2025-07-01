@@ -16,7 +16,18 @@ export default async function handler(
   }
 
   try {
-    const { title, price, imageUrl, quantity = 1 } = req.body;
+    const { title, price, imageUrl, quantity = 1 , options = {} } = req.body;
+
+    const properties = [
+  { name: "Custom Image", value: imageUrl },
+  { name: "Preview Image", value: imageUrl },
+  { name: "Product ID", value: options.productId || "-" },
+  { name: "Template ID", value: options.templateId || "-" },
+  { name: "Pattern ID", value: options.patternId || "-" },
+  { name: "Text", value: options.text || "-" },
+  { name: "Pic", value: options.pic || "-" },
+    { name: "Size", value: options.size || "-" },
+];
 
     const draftOrderPayload = {
       draft_order: {
@@ -25,12 +36,7 @@ export default async function handler(
             title,
             price,
             quantity,
-            properties: [
-              {
-                name: "Custom Image",
-                value: imageUrl,
-              },
-            ],
+            properties
           },
         ],
         note: "Custom product order from Next.js site",

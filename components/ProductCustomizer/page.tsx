@@ -49,15 +49,23 @@ interface CustomOptions {
   patternId: string;
   text: string;
   pic: string;
+  size: string;
 }
 
 const ProductCustomizer = () => {
+  const sizePriceMap: Record<string, string> = {
+  "12 pack": "100",
+  "48 pack": "120",
+  "96 pack": "180",
+  "120 pack": "220",
+};
   const [options, setOptions] = useState<CustomOptions>({
     productId: "",
     templateId: "",
     patternId: "",
     text: "",
     pic: "",
+    size:""
   });
 const [activeOption, setActiveOption] = useState("productId");
   const imageNewUrl = "https://bikerzsupermart.com/wp-content/uploads/2024/01/WhatsApp-Image-2023zz-2.png";
@@ -73,7 +81,7 @@ const [activeOption, setActiveOption] = useState("productId");
   const [templateSize, setTemplateSize] = useState(150);
   const [patternSize, setPatternSize] = useState(150);
   const [textSize, setTextSize] = useState(16);
- 
+  const selectedSizePrice = sizePriceMap[options.size] || "100";
  
 
 const generateFinalImage = async () => {
@@ -121,97 +129,70 @@ function safeColor(colorStr: string): string {
 
 
   const handleSubmit = async () => {
-   const base64Image = await generateFinalImage();
-
-const resImage = await fetch('/api/upload-to-shopify', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ base64Image }),
-});
-
-const resultImage = await resImage.json();
-if (resultImage.success) {
-  console.log("Image uploaded to Shopify:", resultImage.imageUrl);
-} else {
-  console.error("Upload failed:", resultImage.error);
-}
-
-    const payload = {
-      variantId: "gid://shopify/ProductVariant/46835996393639",
-      quantity: 1,
-      attributes: [
-        { key: "productId", value: options.productId },
-        { key: "templateId", value: options.templateId },
-        { key: "patternId", value: options.patternId },
-        { key: "text", value: options.text },
-        { key: "pic", value: options.pic },
-        { key: "finalImage", value: imageNewUrl || "" },
-      ],
-    };
-
-   const resOfProduct = await fetch('/api/create-product', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    imageUrl: imageNewUrl,
-    title: 'My Custom Product',
-  }),
-});
-
-const data = await resOfProduct.json();
-console.log("data:", {data});
-
-    const res = await fetch("/api/add-to-cart", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await res.json();
-
-
-
-    if (result.success) {
-      window.location.href = result.checkoutUrl;
-    } else {
-      alert("Error: " + JSON.stringify(result.error));
-    }
-  };
-
-  const handleCheckout = async () => {
-  //  const base64Image = await generateFinalImage();
-
-  //  try {
-  //   const res = await fetch("/api/upload-to-shopify", {
-  //     method:'POST',
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ base64Image })
-  //   });
-
-  //   const result = await res.json();
-
-  //   if (res.ok) {
-  //     console.log("Uploaded successfully!", result.imageId);
-  //   } else {
-  //     console.error("Error uploading image", result.error);
-  //   }
-  // } catch (err) {
-  //   console.error("Error during upload", err);
-  // }
+  const dynamicPrice = "34.99"; // Replace this with the calculated price if needed
 
   const payload = {
-    title: "Custom Printed Mug",
-    price: "29.99",
-    imageUrl: imageNewUrl,  
+    variantId: "gid://shopify/ProductVariant/46835996393639",
     quantity: 1,
+    attributes: [
+      { key: "productId", value: options.productId },
+      { key: "templateId", value: options.templateId },
+      { key: "patternId", value: options.patternId },
+      { key: "text", value: options.text },
+      { key: "pic", value: options.pic },
+      { key: "finalImage", value: imageNewUrl || "" },
+    ],
   };
-  console.log("payload",{payload})
+
+  const resOfProduct = await fetch('/api/create-product', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      imageUrl: imageNewUrl,
+      title: 'My Custom Product',
+      price: dynamicPrice, // 💡 Pass the price here
+    }),
+  });
+
+  const data = await resOfProduct.json();
+  console.log("data:", data);
+
+  const res = await fetch("/api/add-to-cart", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const result = await res.json();
+
+  if (result.success) {
+    window.location.href = result.checkoutUrl;
+  } else {
+    alert("Error: " + JSON.stringify(result.error));
+  }
+};
+
+
+const handleCheckout = async () => { 
+  const payload = {
+    title: "Custom Printed Mug",
+    price: selectedSizePrice,
+    imageUrl: imageNewUrl,
+    quantity: 1,
+    options: {
+      productId: options.productId,
+      templateId: options.templateId,
+      patternId: options.patternId,
+      text: options.text,
+      pic: options.pic,
+      size: options.size
+    },
+  };
+
   const res = await fetch("/api/create-draft-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -227,6 +208,7 @@ console.log("data:", {data});
     alert("Failed to checkout.");
   }
 };
+
 
   return (
  <div className="flex " style={{ gap: "20px" }}
@@ -362,19 +344,41 @@ console.log("data:", {data});
 
 
 </div>
+<div style={{
+  display:"flex",
+  gap:"20px",
+  alignItems:"center"
+}}>
 <div>
   Size <br />
-  <select
-    
-    className="border p-2 my-2 w-[200px]"
-  >
-    <option value="">Select Size</option>
-    <option value="p1">12 pack</option>
-    <option value="p2">48 pack</option>
-    <option value="p3">96 pack</option>
-    <option value="p4">120 pack</option>
-  </select>
+ <select
+  className="border p-2 my-2 w-[200px]"
+  value={options.size}
+  onChange={(e) => setOptions({ ...options, size: e.target.value })}
+> 
+  <option value="12 pack">12 pack</option>
+  <option value="48 pack">48 pack</option>
+  <option value="96 pack">96 pack</option>
+  <option value="120 pack">120 pack</option>
+</select>
 </div>
+
+<div className="p-4 pt-8">
+  <div>
+
+  Price: <span
+  style={{
+    fontSize:"18px",
+    color:"red"
+  }}
+  >₹{selectedSizePrice}.00</span>
+
+
+  </div>
+</div>
+</div>
+
+
  
           <div>
           <button
