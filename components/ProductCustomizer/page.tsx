@@ -202,7 +202,15 @@ const handleCheckout = async () => {
   const result = await res.json();
 
   if (result.success) {
-    window.location.href = result.checkoutUrl;
+    if (typeof window !== "undefined") {
+      if (window.parent !== window) {
+        // Inside iframe — notify parent (Shopify)
+        window.parent.postMessage({ type: "checkout", url: result.checkoutUrl }, "*");
+      } else {
+        // Not in iframe — direct redirect
+        window.location.href = result.checkoutUrl;
+      }
+    }
   } else {
     console.error("Error creating draft order:", result.error);
     alert("Failed to checkout.");
