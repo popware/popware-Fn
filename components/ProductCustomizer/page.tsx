@@ -228,7 +228,7 @@ const handleCheckout = async () => {
         <h2 className="text-xl font-bold mb-4 "
         style={{ color: "#313943" }}
         >
-          Customize Your Product
+          Customize Your Products
         </h2>
  
         <div className="flex mb-4">
