@@ -239,7 +239,9 @@ const handleCheckout = async () => {
           ].map((item) => (
             <>
         
-           <div>
+           <div style={{
+            color:"#000"
+           }}>
               {item?.step}<sup 
  style={{
   color:"red"
@@ -274,7 +276,9 @@ const handleCheckout = async () => {
         {/* Display Select Based on Active Tab */}
         {activeOption && (
           <div className="mb-4">
-  <label className="block mb-2">
+  <label className="block mb-2" style={{
+    color:"#000"
+  }}>
     {activeOption === "productId" ? "Choose glass:" :
      activeOption === "templateId" ? "Choose Template:" :
      "Choose Pattern:" }
@@ -293,7 +297,9 @@ const handleCheckout = async () => {
       >
         {/* If you have images for products, you can show them here. Otherwise omit. */}
         <img src={item.image} alt={item.name} className="mb-2 w-10 h-10 object-contain  " />
-        <div className=" text-[12px] ">{item.name}</div>
+        <div className=" text-[12px] " style={{
+          color:"#000"
+        }}>{item.name}</div>
       </div>
     ))}
   </div>
@@ -306,8 +312,11 @@ const handleCheckout = async () => {
 
 <div className="flex gap-[10px]">
 <div className="flex-1">
-   <span>
-          Step 04 <sup 
+   <span style={{
+    color:"#000"
+   }}>
+          Step 04 
+          <sup 
  style={{
   color:"red"
  }}
@@ -324,6 +333,10 @@ const handleCheckout = async () => {
           onChange={(e) => setOptions({ ...options, text: e.target.value })}
           placeholder="Enter custom text"
           className="border p-2 my-2 w-full"
+          style={{
+            border:"1px solid #000",
+            color:"#000"
+          }}
         />
            
           
@@ -331,7 +344,11 @@ const handleCheckout = async () => {
           
 </div>
 <div className="flex-1">
-   <span>
+   <span
+   style={{
+    color:"#000"
+   }}>
+   
           Step 05  <sup 
  style={{
   color:"red"
@@ -349,6 +366,10 @@ const handleCheckout = async () => {
           onChange={(e) => setOptions({ ...options, pic: e.target.value })}
           placeholder="Enter pic image URL"
           className="border p-2 my-2 w-full"
+          style={{
+            border:"1px solid #000",
+            color:"#000"
+          }}
         /></div>
 
 
@@ -359,11 +380,20 @@ const handleCheckout = async () => {
   alignItems:"center"
 }}>
 <div>
-  Size <br />
+  <span style={{
+    color:"#000"
+  }}>
+Size
+  </span>
+   <br />
  <select
   className="border p-2 my-2 w-[200px]"
   value={options.size}
   onChange={(e) => setOptions({ ...options, size: e.target.value })}
+  style={{
+    border:"1px solid #000",
+    color:"#000"
+  }}
 > 
   <option value="12 pack">12 pack</option>
   <option value="48 pack">48 pack</option>
@@ -373,9 +403,15 @@ const handleCheckout = async () => {
 </div>
 
 <div className="p-4 pt-8">
-  <div>
+  <div
+  style={{
+    color:"#000"
+  }}
+  >
 
-  Price: <span
+  Price:
+  
+   <span
   style={{
     fontSize:"18px",
     color:"red"
